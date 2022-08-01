@@ -4,24 +4,31 @@
  
  
  
- ## Contents
- #### [Setup](#setup)
-   * ####  [Python Setup](#python-setup)
-   * ####  [C Setup](#c-setup)
- #### [Usage](#usage)
-   * ####  [Python Usage](#python-usage)
-   * ####  [Python Methods](#python-methods)
-   * ####  [C Usage](#c-usage)
-   * ####  [C Methods](#c-methods)
- 
- 
- ## Setup
+ Contents
+-----------------
+
+* [Setup](#setup)
+* [Python Setup](#py-setup)
+* [C Setup](#c-setup)
+* [Usage](#usage)
+* [Python Usage](#py-usage)
+* [Python Methods](#py-methods)
+* [C Usage](#c-usage)
+* [C Methods](#c-methods)
+
+
+<a name="setup"></a>
+Setup
+------------
+
+ <a name="py-setup"></a>
  ### Python Setup
  To setup we simply need drop and
  ```python
 
  ```
-
+ 
+ <a name="c-usage"></a>
  ### C Setup
  Unfortunately, using our C wrapper is a bit more complex than the strictly Python implementation. 
 
@@ -40,7 +47,10 @@
 
  ```
 
- ## Usage 
+ <a name="usage"></a>
+ Usage
+ ------------
+  <a name="py-usage"></a>
  ### Python Usage
  Usage in Python is straight-forward. For the purpose of demonstration, I'll be using by @jkjung-avt to demonstrate a basic tiling algorithm approach with Yolov3 Tiny.
 
@@ -64,9 +74,9 @@
 
  ```
  
- 
+  <a name="py-methods"></a>
  ### Python Methods
-  ### split
+  #### split
   Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
    
    Return 
@@ -96,7 +106,7 @@
  ```
  
  
-  ### tile
+  #### tile
   Tiles a numpy image array into a single image of desired dimensions. If output image does not match the desired dimensions, the image is resized to match.
   
   Return 
@@ -129,10 +139,11 @@
      return Image.fromarray(image_arr)
  ```
  
- 
+  <a name="c-usage"></a>
  ### C Usage
  For usage in C, again we will utilize the [darknet](https://github.com/AlexeyAB/darknet) fork by @AlexeyAB as an example.
-
+ 
+ <a name="c-methods"></a>
  ### C Methods
   ### init_image_tiler
   Initializes the C wrapper to link our python script. Must be called prior to implemenation.
@@ -141,7 +152,7 @@
   
   ```
 
-  ### split_image
+  #### split_image
   Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
   
   Return 
@@ -171,7 +182,7 @@
  ```
 
 
-  ### tile_image
+  #### tile_image
   Tiles a numpy image array into a single image of desired dimensions. If output image does not match the desired dimensions, the image is resized to match.
   
   Return 
