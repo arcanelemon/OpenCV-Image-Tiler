@@ -132,6 +132,10 @@
  ### Methods
   ### init_image_tiler
   > Initializes the C wrapper to link our python script. Must be called prior to implemenation.
+  
+  ```c
+  
+  ```
 
   ### split_image
   > Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
@@ -142,7 +146,7 @@
   > - **img** (cv::Mat) The image provided to split.
   > - **slice_size** (int) The desired slice size of the new images.
 
- ```python
+ ```c
  def split_image(image, slice_size = 416):
 
      image_arr = np.array(image, dtype=np.uint8)
@@ -172,7 +176,7 @@
   > - **width** (int) The width of the tiled image.
   > - **height** (int) The height of the tiled image.
 
- ```python
+ ```c
  def tile_image(images, width, height):
 
      i, x, y = 0, 0, 0
