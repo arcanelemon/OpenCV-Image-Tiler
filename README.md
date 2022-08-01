@@ -65,13 +65,14 @@
  
  ### Methods
   ### split
-  > Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
-  > 
-  > Return numpy::ndarray[]
-  > 
-  > Arguments
-  > - **img** (ndarray) The image provided to split.
-  > - **slice_size** (int) The desired slice size of the new images.
+  Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
+   
+   Return 
+  > numpy::ndarray[]
+  
+   Arguments
+  > **img** (ndarray) The image provided to split.
+  > **slice_size** (int) The desired slice size of the new images.
 
  ```python
  def split(image, slice_size = 416):
@@ -94,14 +95,15 @@
  
  
   ### tile
-  > Tiles a numpy image array into a single image of desired dimensions. If output image does not match the desired dimensions, the image is resized to match.
-  > 
-  > Return numpy::ndarray
-  > 
-  > Arguments
-  > - **imgs** (ndarray[]) The provided images to tile.
-  > - **width** (int) The width of the tiled image.
-  > - **height** (int) The height of the tiled image.
+  Tiles a numpy image array into a single image of desired dimensions. If output image does not match the desired dimensions, the image is resized to match.
+  
+  Return 
+  > numpy::ndarray
+  
+  Arguments
+  > **imgs** (ndarray[]) The provided images to tile.
+  > **width** (int) The width of the tiled image.
+  > **height** (int) The height of the tiled image.
 
  ```python
  def tile(images, width, height):
@@ -131,20 +133,21 @@
 
  ### Methods
   ### init_image_tiler
-  > Initializes the C wrapper to link our python script. Must be called prior to implemenation.
+  Initializes the C wrapper to link our python script. Must be called prior to implemenation.
   
   ```c
   
   ```
 
   ### split_image
-  > Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
-  > 
-  > Return numpy::ndarray[]
-  > 
-  > Arguments
-  > - **img** (cv::Mat) The image provided to split.
-  > - **slice_size** (int) The desired slice size of the new images.
+  Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
+  
+  Return 
+  > numpy::ndarray[]
+  
+  Arguments
+  > **img** (cv::Mat) The image provided to split.
+  > **slice_size** (int) The desired slice size of the new images.
 
  ```c
  def split_image(image, slice_size = 416):
@@ -167,14 +170,15 @@
 
 
   ### tile_image
-  > Tiles a numpy image array into a single image of desired dimensions. If output image does not match the desired dimensions, the image is resized to match.
-  > 
-  > Return numpy::ndarray
-  > 
-  > Arguments
-  > - **imgs** (cv::Mat[]) The provided images to tile.
-  > - **width** (int) The width of the tiled image.
-  > - **height** (int) The height of the tiled image.
+  Tiles a numpy image array into a single image of desired dimensions. If output image does not match the desired dimensions, the image is resized to match.
+  
+  Return 
+  > numpy::ndarray
+  
+  Arguments
+  > **imgs** (cv::Mat[]) The provided images to tile.
+  > **width** (int) The width of the tiled image.
+  > **height** (int) The height of the tiled image.
 
  ```c
  def tile_image(images, width, height):
