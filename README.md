@@ -6,11 +6,13 @@
  
  ## Contents
  #### [Setup](#setup)
- ####  [Python Setup](#python-setup)
- ####  [C Setup](#c-setup)
+   * ####  [Python Setup](#python-setup)
+   * ####  [C Setup](#c-setup)
  #### [Usage](#usage)
- ####  [Python Usage](#python-usage)
- ####  [C Usage](#c-usage)
+   * ####  [Python Usage](#python-usage)
+   * ####  [Python Methods](#python-methods)
+   * ####  [C Usage](#c-usage)
+   * ####  [C Methods](#c-methods)
  
  
  ## Setup
@@ -63,7 +65,7 @@
  ```
  
  
- ### Methods
+ ### Python Methods
   ### split
   Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
    
@@ -131,7 +133,7 @@
  ### C Usage
  For usage in C, again we will utilize the [darknet](https://github.com/AlexeyAB/darknet) fork by @AlexeyAB as an example.
 
- ### Methods
+ ### C Methods
   ### init_image_tiler
   Initializes the C wrapper to link our python script. Must be called prior to implemenation.
   
