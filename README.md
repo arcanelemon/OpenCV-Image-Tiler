@@ -2,7 +2,8 @@
 ### OpenCV Image Tiling Utilites
  A simple OpenCV ultility used to split and tile images. For utilization in AIML image tiling and classification models.  
  
- 
+ ![Diagram](tiling module diagram.jpg)
+ ---
  
  Contents
 -----------------
@@ -145,7 +146,7 @@ Setup
  
  <a name="c-methods"></a>
  ### C Methods
-  ### init_image_tiler
+  #### init_image_tiler
   Initializes the C wrapper to link our python script. Must be called prior to implemenation.
   
   ```c
