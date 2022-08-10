@@ -24,26 +24,21 @@ Setup
 
  <a name="py-setup"></a>
  ### Python Setup
- To setup we simply need drop and
+ To setup we simply need drop the 'image_tiler.py' file in a designated folder and import it from the following:
  ```python
-
+from image_tiler import split, tile
  ```
  
  <a name="c-usage"></a>
  ### C Setup
- Unfortunately, using our C wrapper is a bit more complex than the strictly Python implementation. 
+ Unfortunately, using our C wrapper is a bit more complex than the strictly Python implementation.
 
- After 
+ Since this is embedded python code. we first need to link your 'pyconfig.h' in the make file.
  ```c
 
  ```
 
- Compile
- ```c
-
- ```
-
- Alternatively, you can use the following to compile
+ Alternatively, you can compile by running something like the following:
  ```c
 
  ```
@@ -53,26 +48,34 @@ Setup
  ------------
   <a name="py-usage"></a>
  ### Python Usage
- Usage in Python is straight-forward. For the purpose of demonstration, I'll be using by @jkjung-avt to demonstrate a basic tiling algorithm approach with Yolov3 Tiny.
+ Usage in Python is straight-forward. For the purpose of demonstration, I'll be using the Tensorrt_Demos by @jkjung-avt to demonstrate a basic tiling algorithm approach with Yolov3 Tiny.
 
  First, grab the frame we are about to process
  ```python
-
+img = cam.read()
  ```
 
  Using the image tiler, split the image into desired size
  ```python
-
+imges = split(img)
  ```
 
  For each new image, run image classification and draw detections
  ```python
-
+for i in imges:
+    boxes, confs, clss = trt_yolo.detect(i, conf_th)
+    i = vis.draw_bboxes(i, boxes, confs, clss)
  ```
 
  After we have classification, recompile image for display
  ```python
-
+img = tile(imges, width, height)
+ ```
+ 
+ Finally we can display the image
+ ```python
+img = show_fps(img, fps)
+cv2.imshow(WINDOW_NAME, img)
  ```
  
   <a name="py-methods"></a>
@@ -90,20 +93,31 @@ Setup
  ```python
  def split(image, slice_size = 416):
 
-     image_arr = np.array(image, dtype=np.uint8)
-     height = image_arr.shape[0]
-     width = image_arr.shape[1]
+    # scale image to match slice dimension
+    height = image.shape[0]
+    width = image.shape[1]
+    y_scale = math.ceil(height / slice_size)
+    x_scale = math.ceil(width / slice_size)
+    dim = (x_scale * slice_size, y_scale * slice_size)
+    
+    # apply scale
+    image = cv2.resize(image, dim, interpolation=cv2.INTER_CUBIC)
+    height = image.shape[0]
+    width = image.shape[1]
+    
+    # split image
+    images = []
+    for i in range (height // slice_size):
+        for j in range((width // slice_size)):
+            left = j * slice_size;
+            top = i * slice_size;
+            right = (j + 1) * slice_size;
+            bottom = (i + 1) * slice_size;
 
-     images = []
-     for i in range (height // slice_size):
-         for j in range((width // slice_size)):
-             left = i * slice_size;
-             top = j * slice_size;
-             right = (i + 1) * slice_size;
-             bottom = (j + 1) * slice_size;
-             images.append(Image.fromarray(image_arr[top:left, bottom:right]))
+            new_image = image[top:bottom, left:right]
+            images.append(new_image)
 
-     return images
+    return images
  ```
  
  
@@ -119,25 +133,35 @@ Setup
   > **height** (int) The height of the tiled image.
 
  ```python
- def tile(images, width, height):
+def tile(images, width, height):
+    
+    # scale to tile size
+    slice_size = images[0].shape[0]
+    y_scale = math.ceil(height / slice_size)
+    x_scale = math.ceil(width / slice_size)
+    dim = (x_scale * slice_size, y_scale * slice_size)
+    
+    final_image = np.zeros((height, width, 3), dtype=np.uint8)
+    final_image = cv2.resize(final_image, dim, interpolation=cv2.INTER_CUBIC)
 
-     i, x, y = 0, 0, 0
-     image_arr = np.array([])
-     while y < height:
+    # tile image
+    x, y = 0, 0
+    for image in images:
+        if x + image.shape[1] > final_image.shape[1]:
+           x = 0
+           y += image.shape[0]
+        
+        ## image = np.hstack((image, np.zeros((image.shape[0], image.shape[1], 3))))
+        final_image[y:image.shape[0] + y, x:image.shape[1] + x, :] = image
+        x += image.shape[1]
 
-         horizontal = np.array([])
+    # scale final image to target dimensions
+    y_scale = height / final_image.shape[0]
+    x_scale = width / final_image.shape[1]
+    dim = (int(x_scale * final_image.shape[1]), int(y_scale * final_image.shape[0]))
+    final_image = cv2.resize(final_image, dim, interpolation=cv2.INTER_CUBIC)
 
-         while x < width:
-             image = np.array(images[i], dtype=np.uint8)
-             horizontal = np.concatenate(horizontal, image, 1)
-             x += image.shape[1]
-             i++
-
-         image_arr = np.concatenate(image_arr, horizontal, 0)
-         x = 0
-         y += horizontal.shape[0]
-
-     return Image.fromarray(image_arr)
+    return final_image
  ```
  
   <a name="c-usage"></a>
@@ -146,74 +170,48 @@ Setup
  
  <a name="c-methods"></a>
  ### C Methods
-  #### init_image_tiler
+  #### InitTiler
   Initializes the C wrapper to link our python script. Must be called prior to implemenation.
   
   ```c
   
   ```
+  
+  #### CloseTiler
+  Cleans up python script execution. Call after implemenation.
+  
+  ```c
+  
+  ```
 
-  #### split_image
-  Splits standard numpy image data into an image array portional to slice size. Will resize provided image if slice size does not fit evenly.
+  #### Split
+  Splits a mat_cv image data into an mat_cv image array portional to slice size. Will resize provided image if slice size does not fit evenly.
   
   Return 
-  > numpy::ndarray[]
+  > mat_cv** images
   
   Arguments
-  > **img** (cv::Mat) The image provided to split.
+  > **img** (mat_cv*) The image provided to split.
   > **slice_size** (int) The desired slice size of the new images.
 
  ```c
- def split_image(image, slice_size = 416):
-
-     image_arr = np.array(image, dtype=np.uint8)
-     height = image_arr.shape[0]
-     width = image_arr.shape[1]
-
-     images = []
-     for i in range (height // slice_size):
-         for j in range((width // slice_size)):
-             left = i * slice_size;
-             top = j * slice_size;
-             right = (i + 1) * slice_size;
-             bottom = (j + 1) * slice_size;
-             images.append(Image.fromarray(image_arr[top:left, bottom:right]))
-
-     return images
+ 
  ```
 
 
-  #### tile_image
-  Tiles a numpy image array into a single image of desired dimensions. If output image does not match the desired dimensions, the image is resized to match.
+  #### Tile
+  Tiles a mat_cv image array into a single mat_cv image of desired dimensions. If output image does not match the desired dimensions, the image is resized to match.
   
   Return 
-  > numpy::ndarray
+  > mat_cv* image
   
   Arguments
-  > **imgs** (cv::Mat[]) The provided images to tile.
+  > **imgs** (mat_cv**) The provided images to tile.
   > **width** (int) The width of the tiled image.
   > **height** (int) The height of the tiled image.
 
  ```c
- def tile_image(images, width, height):
 
-     i, x, y = 0, 0, 0
-     image_arr = np.array([])
-     while y < height:
-
-         horizontal = np.array([])
-
-         while x < width:
-             image = np.array(images[i], dtype=np.uint8)
-             horizontal = np.concatenate(horizontal, image, 1)
-             x += image.shape[1]
-             i++
-
-         image_arr = np.concatenate(image_arr, horizontal, 0)
-         x = 0
-         y += horizontal.shape[0]
-
-     return Image.fromarray(image_arr)
  ```
 
 
