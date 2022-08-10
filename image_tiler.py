@@ -1,39 +1,62 @@
+import math
+import cv2
 import numpy as np
 from PIL import Image
 
 def split(image, slice_size = 416):
 
-    image_arr = np.array(image, dtype=np.uint8)
-    height = image_arr.shape[0]
-    width = image_arr.shape[1]
-
+    # scale image to match slice dimension
+    height = image.shape[0]
+    width = image.shape[1]
+    y_scale = math.ceil(height / slice_size)
+    x_scale = math.ceil(width / slice_size)
+    dim = (x_scale * slice_size, y_scale * slice_size)
+    
+    # apply scale
+    image = cv2.resize(image, dim, interpolation=cv2.INTER_CUBIC)
+    height = image.shape[0]
+    width = image.shape[1]
+    
+    # split image
     images = []
     for i in range (height // slice_size):
         for j in range((width // slice_size)):
-            left = i * slice_size;
-            top = j * slice_size;
-            right = (i + 1) * slice_size;
-            bottom = (j + 1) * slice_size;
-            images.append(Image.fromarray(image_arr[top:left, bottom:right]))
+            left = j * slice_size;
+            top = i * slice_size;
+            right = (j + 1) * slice_size;
+            bottom = (i + 1) * slice_size;
+
+            new_image = image[top:bottom, left:right]
+            images.append(new_image)
 
     return images
 
 def tile(images, width, height):
+    
+    # scale to tile size
+    slice_size = images[0].shape[0]
+    y_scale = math.ceil(height / slice_size)
+    x_scale = math.ceil(width / slice_size)
+    dim = (x_scale * slice_size, y_scale * slice_size)
+    
+    final_image = np.zeros((height, width, 3), dtype=np.uint8)
+    final_image = cv2.resize(final_image, dim, interpolation=cv2.INTER_CUBIC)
 
-    i, x, y = 0, 0, 0
-    image_arr = np.array([])
-    while y < height:
+    # tile image
+    x, y = 0, 0
+    for image in images:
+        if x + image.shape[1] > final_image.shape[1]:
+           x = 0
+           y += image.shape[0]
+        
+        ## image = np.hstack((image, np.zeros((image.shape[0], image.shape[1], 3))))
+        final_image[y:image.shape[0] + y, x:image.shape[1] + x, :] = image
+        x += image.shape[1]
 
-        horizontal = np.array([])
+    # scale final image to target dimensions
+    y_scale = height / final_image.shape[0]
+    x_scale = width / final_image.shape[1]
+    dim = (int(x_scale * final_image.shape[1]), int(y_scale * final_image.shape[0]))
+    final_image = cv2.resize(final_image, dim, interpolation=cv2.INTER_CUBIC)
 
-        while x < width:
-            image = np.array(images[i], dtype=np.uint8)
-            horizontal = np.concatenate(horizontal, image, 1)
-            x += image.shape[1]
-            i++
-
-        image_arr = np.concatenate(image_arr, horizontal, 0)
-        x = 0
-        y += horizontal.shape[0]
-
-    return Image.fromarray(image_arr)
+    return final_image
