@@ -11,11 +11,13 @@
 [Setup](#setup)
  * [Python Setup](#py-setup)
  * [C Setup](#c-setup)
+ 
 [Usage](#usage)
  * [Python Usage](#py-usage)
  * [Python Methods](#py-methods)
  * [C Usage](#c-usage)
  * [C Methods](#c-methods)
+
 [Testing](#testing)
 
 
