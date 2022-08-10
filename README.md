@@ -16,6 +16,7 @@
 * [Python Methods](#py-methods)
 * [C Usage](#c-usage)
 * [C Methods](#c-methods)
+* [Testing](#testing)
 
 
 <a name="setup"></a>
@@ -214,6 +215,7 @@ def tile(images, width, height):
 
  ```
 
-
+<a name="testing"></a>
+ ### Testing
  
  
