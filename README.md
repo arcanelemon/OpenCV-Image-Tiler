@@ -8,15 +8,15 @@
  Contents
 -----------------
 
-* [Setup](#setup)
+[Setup](#setup)
  * [Python Setup](#py-setup)
  * [C Setup](#c-setup)
-* [Usage](#usage)
+[Usage](#usage)
  * [Python Usage](#py-usage)
  * [Python Methods](#py-methods)
  * [C Usage](#c-usage)
  * [C Methods](#c-methods)
-* [Testing](#testing)
+[Testing](#testing)
 
 
 <a name="setup"></a>
