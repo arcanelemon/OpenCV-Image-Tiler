@@ -216,6 +216,7 @@ def tile(images, width, height):
  ```
 
 <a name="testing"></a>
- ### Testing
+Testing
+-----------------
  
  
