@@ -35,6 +35,7 @@
  * [Complexity](#complexity)
  * [Procedure](#test_procedure)
  * [Test Results](#test_results)
+ * [Test Conclusions](#test_conclusions)
 
 [Additional Resources](#resources)
 
@@ -276,20 +277,17 @@ A sample of the output images can be found in the <a href="Output/">Output</a> f
 <a name="test_results"></a>
 ### Test Results
 
-The test results are broken down in the following section. Looking at a side by side of the images, there is a clear improvement in the amount of detections after tiling. Unfortunately this is still no where near the amount of detections expected. This is largely attributed to the quality and training set used in the model, rather than the implementation.
+The test results are broken down in the following section. Looking at a side by side of the images, there is a clear improvement in the amount of detections after tiling. Unfortunately this is still no where near the amount of detections expected. See [Test Conclusions](#test-conclusions) for further information.
 
 | Before   |      After      |  Expected |        
 |----------|-----------------|-----------|
 |![Before](Output/Munich_0001_standard.jpg)|![After](Output/Munich_0001_tiled.jpg)|![Expected](Images/after.jpeg)|
 
-*The following breakdown is incomplete - annotations of high resolution data could not be located. What follows is the performance results across standard COCO and TJU-DHD datasets. This is skewed as the tiling does not perform up to standard on lower resolution images.*
-<br></br>
-
 #### FPS
 
 | Standard FPS   |      FPS w/ Tiling    |        
 |----------------|-----------------------|
-|![Standard FPS](Images/standard%20fps.png)|![FPS w/ Tiling](Images/tiled%20fps.png)|
+|![Standard FPS](Images/tiled%20fps.png)|![FPS w/ Tiling](Images/standard%20fps.png)|
 
 #### mAP
 
@@ -302,7 +300,22 @@ The test results are broken down in the following section. Looking at a side by 
 | Standard Distribution   |      Distribution w/ Tiling    |        
 |-------------------------|----------------------------|
 |![Standard Distribution](Images/standard%20object%20dist.png)|![Distribution w/ Tiling]()|
-<br></br>
+
+<a name="test_conclusions"></a>
+### Test Conclusions
+
+Despite improvements in detection accuracy, testing did not quite reflect the desired results. I don't believe that this is a fault of implementation, but rather due to 2 main factors:
+
+1. The high resolution data sets used all consist of arial images. I believe that the model used (YOLOv3 Tiny) has not been sufficiently trained on similar sets. Thus, we get more detections as a result of the high resolution crops. However, the lack of training means that these detections may not be as accurate as desired.
+2. Standard datasets are typically targeted at low to mid resolution images. Depending on the tiling size set when cropping, there is the potential to obscure objects with high resolution crops that are too small. I've illustrated an example below:
+
+
+![Standard Example](Images/standard%20example.png)
+
+![Tiled Example](Images/tiled%20example.png)
+
+
+Overall, the tiling process seams to be quite particular to that specific use-case when implementing. Consideration should be given to both performance and expected object size. Crops too small may work great on high resolution images, but obscure data on smaller images.
 
 <a name="resources"></a>
 Additional Resources
