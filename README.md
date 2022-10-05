@@ -309,10 +309,9 @@ Despite improvements in detection accuracy, testing did not quite reflect the de
 1. The high resolution data sets used all consist of arial images. I believe that the model used (YOLOv3 Tiny) has not been sufficiently trained on similar sets. Thus, we get more detections as a result of the high resolution crops. However, the lack of training means that these detections may not be as accurate as desired.
 2. Standard datasets are typically targeted at low to mid resolution images. Depending on the tiling size set when cropping, there is the potential to obscure objects with high resolution crops that are too small. I've illustrated an example below:
 
-
-![Standard Example](Images/standard%20example.png)
-
-![Tiled Example](Images/tiled%20example.png)
+| Standard Example  |      Tiled Example    |        
+|----------------|-----------------------|
+|![Standard Example](Images/standard%20example.png)|![Tiled Example](Images/tiled%20example.png)|
 
 
 Overall, the tiling process seams to be quite particular to that specific use-case when implementing. Consideration should be given to both performance and expected object size. Crops too small may work great on high resolution images, but obscure data on smaller images.
